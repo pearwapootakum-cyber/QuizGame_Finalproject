@@ -5,7 +5,7 @@ earn points, and compete for the highest score.
 
 ## Features
 
-- Player registration
+- Player registration(change)
 - Multiple question categories
 - Three difficulty levels: Easy, Medium, Hard
 - Randomized questions
