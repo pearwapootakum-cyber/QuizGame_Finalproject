@@ -29,26 +29,44 @@ git clone https://github.com/pearwapootakum-cyber/QuizGame_Finalproject.git
 cd QuizGame_Finalproject
 ```
 
-(Optional) create and activate a virtual environment:
+The game uses only the Python standard library, so you can run it right
+away. The setup below is only needed to run the tests and the linter.
 
-```bash
-python -m venv .venv
-source .venv/bin/activate      # Windows: .venv\Scripts\activate
+### Windows (Command Prompt or PowerShell)
+
+Run the game:
+
+```bat
+py main.py
 ```
 
-Install the project with the development tools:
+Set up the development tools (optional):
 
-```bash
+```bat
+py -m venv .venv
+.venv\Scripts\activate
 pip install -e ".[dev]"
 ```
 
-## How to Play
+### macOS (Terminal)
 
 Run the game:
 
 ```bash
-python main.py
+python3 main.py
 ```
+
+Set up the development tools (optional):
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+```
+
+Inside an activated virtual environment, `python` works on both systems.
+
+## How to Play
 
 1. Enter your name.
 2. Choose a category and a difficulty:
@@ -76,13 +94,13 @@ with the same name (case-insensitive), the leaderboard keeps your best score.
 ## Running Tests
 
 ```bash
-pytest
+python -m pytest
 ```
 
 ## Linting
 
 ```bash
-ruff check .
+python -m ruff check .
 ```
 
 ## Project Structure
