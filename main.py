@@ -122,8 +122,11 @@ def choose_option(title: str, options: list[str]) -> str:
 
     print(f"\n{title}")
 
-    for number, option in enumerate(options, start=1):
+    number = 1
+
+    for option in options:
         print(f"{number}. {option}")
+        number += 1
 
     while True:
         choice = input("Choose an option: ").strip()
@@ -196,8 +199,11 @@ def display_leaderboard(leaderboard: Leaderboard) -> None:
         print("No scores recorded yet.")
         return
 
-    for rank, player in enumerate(top_players, start=1):
+    rank = 1
+
+    for player in top_players:
         print(f"{rank}. {player.name} - {player.score} points")
+        rank += 1
 
 
 def main() -> None:
@@ -278,8 +284,11 @@ def main() -> None:
         amount=amount,
     )
 
-    for number, question in enumerate(questions, start=1):
+    number = 1
+
+    for question in questions:
         ask_question(quiz, question, player, number)
+        number += 1
 
     print("\n" + "=" * 45)
     print("              QUIZ COMPLETED")
