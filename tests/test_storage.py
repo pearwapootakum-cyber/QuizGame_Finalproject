@@ -47,3 +47,11 @@ def test_invalid_entries_are_skipped(tmp_path):
 
     assert len(players) == 1
     assert players[0].name == "Nut"
+
+def test_save_failure_returns_false(tmp_path):
+    blocker = tmp_path / "not_a_folder"
+    blocker.write_text("", encoding="utf-8")
+
+    storage = JsonStorage(blocker / "leaderboard.json")
+
+    assert storage.save_players([Player("Nut", 10)]) is False

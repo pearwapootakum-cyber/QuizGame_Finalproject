@@ -46,3 +46,21 @@ def test_invalid_leaderboard_limit():
 
     with pytest.raises(ValueError):
         leaderboard.top_players(0)
+
+def test_returning_player_keeps_best_score():
+    leaderboard = Leaderboard([Player("Nut", 10)])
+
+    leaderboard.add_player(Player("nut", 3))
+    assert len(leaderboard) == 1
+    assert leaderboard.players[0].score == 10
+
+    leaderboard.add_player(Player("Nut", 15))
+    assert leaderboard.players[0].score == 15
+
+
+def test_returning_player_name_uses_latest_spelling():
+    leaderboard = Leaderboard([Player("nut", 10)])
+
+    leaderboard.add_player(Player("Nut", 3))
+
+    assert leaderboard.players[0].name == "Nut"

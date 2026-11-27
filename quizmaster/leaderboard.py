@@ -7,20 +7,25 @@ class Leaderboard:
     def __init__(self, players: list[Player] | None = None):
         """Initialize the leaderboard."""
 
-        self.players = list(players) if players is not None else []
+        if players is not None:
+            self.players = list(players)
+        else:
+            self.players = []
 
-        if not all(isinstance(player, Player) for player in self.players):
-            raise TypeError("Leaderboard entries must be Player objects.")
+        for player in self.players:
+            if not isinstance(player, Player):
+                raise TypeError("Leaderboard entries must be Player objects.")
 
     def add_player(self, player: Player) -> None:
-        """Add a player or update their existing score."""
+        """Add a player, or keep the higher of their old and new scores."""
 
         if not isinstance(player, Player):
             raise TypeError("Player must be a Player object.")
 
         for existing_player in self.players:
             if existing_player.name.casefold() == player.name.casefold():
-                existing_player.score = player.score
+                existing_player.name = player.name
+                existing_player.score = max(existing_player.score, player.score)
                 return
 
         self.players.append(player)

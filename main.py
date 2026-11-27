@@ -10,6 +10,8 @@ from quizmaster import (
 
 
 DATA_FILE = Path(__file__).parent / "data" / "leaderboard.json"
+DIFFICULTY_ORDER = ["Easy", "Medium", "Hard"]
+RANKED_GAME_LENGTH = 10
 
 
 def create_questions() -> list[Question]:
@@ -135,6 +137,18 @@ def choose_option(title: str, options: list[str]) -> str:
         print(f"Please enter a number from 1 to {len(options)}.")
 
 
+def ask_amount(maximum: int) -> int:
+    """Ask how many questions to play, from 1 to maximum."""
+
+    while True:
+        choice = input(f"\nHow many questions? (1-{maximum}): ").strip()
+
+        if choice.isdigit() and 1 <= int(choice) <= maximum:
+            return int(choice)
+
+        print(f"Please enter a number from 1 to {maximum}.")
+
+
 def ask_question(
     quiz: Quiz,
     question: Question,
@@ -202,7 +216,20 @@ def main() -> None:
 
     print(f"\nWelcome, {player.name}!")
 
-    categories = sorted({question.category for question in quiz.questions})
+    print(
+        f"\nPick 'All Categories' and 'All Difficulties' for a ranked game "
+        f"of {RANKED_GAME_LENGTH} questions."
+    )
+    print("Any other choice is a practice game and is not saved.")
+
+    categories = []
+
+    for question in quiz.questions:
+        if question.category not in categories:
+            categories.append(question.category)
+
+    categories.sort()
+
     category = choose_option(
         "Choose a category:",
         ["All Categories"] + categories,
@@ -213,9 +240,13 @@ def main() -> None:
 
     available_questions = quiz.select_questions(category=category)
 
-    difficulties = sorted(
-        {question.difficulty for question in available_questions}
-    )
+    difficulties = []
+
+    for question in available_questions:
+        if question.difficulty not in difficulties:
+            difficulties.append(question.difficulty)
+
+    difficulties.sort(key=DIFFICULTY_ORDER.index)
 
     difficulty = choose_option(
         "Choose a difficulty:",
@@ -225,22 +256,18 @@ def main() -> None:
     if difficulty == "All Difficulties":
         difficulty = None
 
-    available_questions = quiz.select_questions(
-        category=category,
-        difficulty=difficulty,
-    )
+    ranked = category is None and difficulty is None
 
-    amount_options = [
-        str(number)
-        for number in range(1, len(available_questions) + 1)
-    ]
-
-    amount = int(
-        choose_option(
-            f"How many questions? (Available: {len(available_questions)})",
-            amount_options,
+    if ranked:
+        amount = RANKED_GAME_LENGTH
+        print(f"\nRanked game: {amount} questions. Your score will be saved.")
+    else:
+        available_questions = quiz.select_questions(
+            category=category,
+            difficulty=difficulty,
         )
-    )
+        amount = ask_amount(len(available_questions))
+        print("\nPractice game: your score will not be saved.")
 
     print("\n========== LET'S START ==========")
     print("Easy = 1 point | Medium = 2 points | Hard = 3 points")
@@ -260,15 +287,21 @@ def main() -> None:
     print(f"Player: {player.name}")
     print(f"Final score: {player.score} points")
 
-    leaderboard.add_player(player)
+    if ranked:
+        leaderboard.add_player(player)
 
-    if storage.save_players(leaderboard.players):
-        print("Your score has been saved.")
+        if storage.save_players(leaderboard.players):
+            print("Your score has been saved.")
+        else:
+            print("Warning: Your score could not be saved.")
     else:
-        print("Warning: Your score could not be saved.")
+        print("Practice game, so your score was not saved.")
 
     display_leaderboard(leaderboard)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except (KeyboardInterrupt, EOFError):
+        print("\n\nQuiz cancelled. Goodbye!")

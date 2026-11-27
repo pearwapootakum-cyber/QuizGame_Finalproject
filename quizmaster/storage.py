@@ -15,16 +15,19 @@ class JsonStorage:
     def save_players(self, players: list[Player]) -> bool:
         """Save player information to a JSON file."""
 
-        if not all(isinstance(player, Player) for player in players):
-            raise TypeError("All entries must be Player objects.")
+        for player in players:
+            if not isinstance(player, Player):
+                raise TypeError("All entries must be Player objects.")
 
-        data = [
-            {
-                "name": player.name,
-                "score": player.score,
-            }
-            for player in players
-        ]
+        data = []
+
+        for player in players:
+            data.append(
+                {
+                    "name": player.name,
+                    "score": player.score,
+                }
+            )
 
         try:
             self.file_path.parent.mkdir(parents=True, exist_ok=True)

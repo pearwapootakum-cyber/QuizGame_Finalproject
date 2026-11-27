@@ -14,8 +14,9 @@ class Quiz:
         if not questions:
             raise ValueError("A quiz must contain at least one question.")
 
-        if not all(isinstance(question, Question) for question in questions):
-            raise TypeError("All items must be Question objects.")
+        for question in questions:
+            if not isinstance(question, Question):
+                raise TypeError("All items must be Question objects.")
 
         self.questions = list(questions)
 
@@ -30,19 +31,22 @@ class Quiz:
         selected = self.questions
 
         if category is not None:
-            selected = [
-                question
-                for question in selected
-                if question.category.casefold() == category.strip().casefold()
-            ]
+            filtered_questions = []
+
+            for question in selected:
+                if question.category.casefold() == category.strip().casefold():
+                    filtered_questions.append(question)
+
+            selected = filtered_questions
 
         if difficulty is not None:
-            selected = [
-                question
-                for question in selected
-                if question.difficulty.casefold()
-                == difficulty.strip().casefold()
-            ]
+            filtered_questions = []
+
+            for question in selected:
+                if question.difficulty.casefold() == difficulty.strip().casefold():
+                    filtered_questions.append(question)
+
+            selected = filtered_questions
 
         if not selected:
             raise ValueError("No questions match your selection.")

@@ -45,7 +45,9 @@ def test_category_filter():
     questions = quiz.select_questions(category="Science")
 
     assert len(questions) == 2
-    assert all(question.category == "Science" for question in questions)
+
+    for question in questions:
+        assert question.category == "Science"
 
 
 def test_difficulty_filter():

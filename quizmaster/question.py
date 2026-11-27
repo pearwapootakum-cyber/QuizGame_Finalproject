@@ -30,10 +30,15 @@ class Question:
             raise TypeError("Difficulty must be a string.")
 
         self.text = self.text.strip()
-        self.options = [
-            option.strip() if isinstance(option, str) else ""
-            for option in self.options
-        ]
+        cleaned_options = []
+
+        for option in self.options:
+            if isinstance(option, str):
+                cleaned_options.append(option.strip())
+            else:
+                cleaned_options.append("")
+
+        self.options = cleaned_options
         self.correct_answer = self.correct_answer.strip().upper()
         self.category = self.category.strip()
         self.difficulty = self.difficulty.strip().title()
@@ -44,8 +49,9 @@ class Question:
         if len(self.options) != 4:
             raise ValueError("A question must have exactly 4 options.")
 
-        if any(not option for option in self.options):
-            raise ValueError("Options cannot be empty.")
+        for option in self.options:
+            if not option:
+                raise ValueError("Options cannot be empty.")
 
         if self.correct_answer not in ["A", "B", "C", "D"]:
             raise ValueError("Correct answer must be A, B, C, or D.")

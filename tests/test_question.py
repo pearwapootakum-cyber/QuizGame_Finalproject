@@ -49,3 +49,7 @@ def test_invalid_difficulty():
 def test_empty_question_text():
     with pytest.raises(ValueError):
         Question("", ["A", "B", "C", "D"], "A", "Test", "Easy")
+
+def test_invalid_correct_answer():
+    with pytest.raises(ValueError):
+        Question("Question?", ["A", "B", "C", "D"], "E", "Test", "Easy")
